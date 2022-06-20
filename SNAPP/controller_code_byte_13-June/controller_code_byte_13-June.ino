@@ -157,10 +157,12 @@ void setup() {
   //Serial.begin(19200);
 
   /*
-  Serial1.begin(19200);
-  Serial2.begin(19200);
-  Serial3.begin(19200);
+  Serial1.begin(19200,SERIAL_8O1);
+  Serial2.begin(19200,SERIAL_8O1);
+  Serial3.begin(19200,SERIAL_8O1);
   */
+  
+  
 
 
   for (int i = 0; i < 5; i++){
@@ -224,11 +226,11 @@ void loop() {
   //Reading Joystick Value
   sensorValueX = analogRead(A0);
   sensorValueY = analogRead(A1);
-  xMap = map(sensorValueX, 10, 1010 , 0, 180);
+  xMap = map(sensorValueX, 50, 900 , 10, 90);
   //yMap = map(sensorValueY, 30, 1000, 1, 9);
 
   //yMap = map(sensorValueY, 0, 1024, 0, 9);
-  yMap = map(sensorValueY, 0, 1000, 0, 180);
+  yMap = map(sensorValueY, 50, 920, 10, 90);
 
   // reading the state of each button
   int currentLeft = digitalRead(leftbutton);
@@ -242,6 +244,13 @@ void loop() {
   checkButton(UP);
   checkButton(DOWN);
   checkButton(KEY);
+
+  if (currentLeft == LOW && currentRight == LOW ){
+      Serial.write("home");
+      Serial.flush();
+      //timer1 = millis();
+      return;
+  }
 
   //Update Screen
   
@@ -282,12 +291,37 @@ void loop() {
     // Prepare string and send to receiver
 
     //speed, pitch, roll, yaw, in that order
+    if (yMap < 10){
+      yMap = 10;
+    }
+    if (xMap < 10){
+      xMap = 10;
+    }
+    if (xMap > 90){
+      xMap = 90;
+    }
+    if (yMap > 90){
+      yMap = 90;
+    }
     sum_str = "c" + String(pMap) + String( (char)yMap) + String(tMap) + String( (char) xMap) + "e"; //payload + checksum
     strcpy(message,sum_str.c_str());
+    //Serial.println((String) xMap + " " +yMap);
     String(message).getBytes(msg,7);
-    for (int i = 0; i < 6; i++){
+    //Serial.println((String) yMap + " " + xMap);
+    for (int i = 0; i < 6; i++){ 
       Serial.write(msg[i]);
       Serial.flush();
+
+      /*
+      Serial1.write(msg[i]);
+      Serial1.flush();
+
+      Serial2.write(msg[i]);
+      Serial2.flush();
+      
+      Serial3.write(msg[i]);
+      Serial3.flush();
+      */
     }
     
     /*
