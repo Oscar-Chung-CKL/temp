@@ -43,8 +43,8 @@ int val1 = 0, val2 = 0, val3 = 0, val4 = 0;
 float power = 0;          //Stores power value from controller
 
 //Motor
-unsigned int pwm_Pin1 = 8;
-unsigned int pwm_Pin2 = 12;
+unsigned int pwm_Pin1 = 9;
+unsigned int pwm_Pin2 = 11;
 float motor_Pwm = 0;
 bool red_Flag = LOW;
 bool on = LOW;
